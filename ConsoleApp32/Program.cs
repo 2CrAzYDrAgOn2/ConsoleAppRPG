@@ -17,7 +17,7 @@
                     Console.Write($"Введите номер уровня врага, которого вы хотите убить: ");
                     long level = Math.Abs(long.Parse(Console.ReadLine()));
                     Console.Write($"Введите 1, чтобы убить легкого врага. Введите 2, чтобы убить среднего врага. Введите 3, чтобы убить босса.");
-                    decimal enemyClass = ParseEnemyClass();
+                    double enemyClass = ParseEnemyClass();
                     Enemy enemy = new(level, enemyClass);
                     GetEnemy(enemy);
                     StartGame(hero, enemy);
@@ -93,14 +93,14 @@
         /// </summary>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public static decimal ParseEnemyClass()
+        public static double ParseEnemyClass()
         {
-            decimal enemyClass = long.Parse(Console.ReadLine());
+            double enemyClass = byte.Parse(Console.ReadLine());
             return enemyClass switch
             {
-                1 => 0.74m,
-                2 => 1.24m,
-                3 => 1.74m,
+                1 => 0.74,
+                2 => 1.24,
+                3 => 1.74,
                 _ => throw new ArgumentException("Неверный выбор класса врага.")
             };
         }
@@ -130,6 +130,12 @@
         /// <param name="enemy"></param>
         public static void AtkHero(Hero hero, Enemy enemy)
         {
+            Random random = new();
+            if (random.Next(0, 100) < enemy.DodgeChance)
+            {
+                Console.WriteLine("Враг уклонился от атаки!");
+                return;
+            }
             enemy.Hp -= hero.Dmg;
             if (enemy.Hp <= 0)
             {
@@ -144,6 +150,12 @@
         /// <param name="enemy"></param>
         public static void AtkEnemy(Hero hero, Enemy enemy)
         {
+            Random random = new();
+            if (random.Next(0, 100) < hero.DodgeChance)
+            {
+                Console.WriteLine("Герой уклонился от атаки!");
+                return;
+            }
             hero.Hp -= Math.Max(0, enemy.Atk - hero.Armory);
         }
     }
