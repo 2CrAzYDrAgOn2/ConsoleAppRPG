@@ -1,14 +1,20 @@
-﻿namespace ConsoleApp32
+﻿using Newtonsoft.Json;
+
+namespace ConsoleApp32
 {
     public class Program
     {
+        public static Hero hero;
+
         /// <summary>
         /// Main()
         /// </summary>
         /// <param name="args"></param>
         public static void Main()
         {
-            Hero hero = new();
+            hero = new Hero();
+            AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);
+            hero = LoadGame();
             while (true)
             {
                 try
@@ -75,6 +81,7 @@
             {
                 hero.LevelUp();
             }
+            SaveGame(hero);
         }
 
         /// <summary>
@@ -157,6 +164,46 @@
                 return;
             }
             hero.Hp -= Math.Max(0, enemy.Atk - hero.Armory);
+        }
+
+        /// <summary>
+        /// OnProcessExit()
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void OnProcessExit(object sender, EventArgs e)
+        {
+            SaveGame(hero);
+            Console.WriteLine("Игра сохранена автоматически при закрытии!");
+        }
+
+        /// <summary>
+        /// SaveGame()
+        /// </summary>
+        /// <param name="hero"></param>
+        public static void SaveGame(Hero hero)
+        {
+            using StreamWriter streamWriter = new("savegame.json");
+            string json = JsonConvert.SerializeObject(hero);
+            streamWriter.Write(json);
+        }
+
+        /// <summary>
+        /// LoadGame()
+        /// </summary>
+        /// <returns></returns>
+        public static Hero LoadGame()
+        {
+            if (File.Exists("savegame.json"))
+            {
+                using StreamReader streamReader = new("savegame.json");
+                string json = streamReader.ReadToEnd();
+                return JsonConvert.DeserializeObject<Hero>(json);
+            }
+            else
+            {
+                return new Hero();
+            }
         }
     }
 }
