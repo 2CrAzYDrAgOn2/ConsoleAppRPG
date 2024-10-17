@@ -1,13 +1,14 @@
 ﻿namespace ConsoleApp32
 {
-    public class Hero(long hp = 100, long dmg = 10, long armory = 1, long xp = 0, long lvl = 1, long neededXp = 100)
+    public class Hero(long hp = 100, long dmg = 10, long armory = 1, long neededXp = 100, long xp = 0, long lvl = 1)
     {
-        public long Hp { get; set; } = hp * lvl;
-        public long Dmg { get; set; } = dmg * lvl;
-        public long Armory { get; set; } = armory * lvl;
+        public double DodgeChance { get; set; } = 10.0;
+        public long Hp { get; set; } = (long)(hp * Math.Pow(1.2, lvl));
+        public long Dmg { get; set; } = (long)(dmg * Math.Pow(1.2, lvl));
+        public long Armory { get; set; } = (long)(armory * Math.Pow(1.2, lvl));
+        public long NeededXp { get; set; } = (long)(neededXp * Math.Pow(1.5, lvl));
         public long Xp { get; set; } = xp;
         public long Lvl { get; set; } = lvl;
-        public long NeededXp { get; set; } = neededXp * lvl;
 
         /// <summary>
         /// GainXp()
@@ -16,7 +17,7 @@
         public void GainXp(long xp)
         {
             Xp += xp;
-            Hp = Lvl * 100;
+            Hp = (long)(100 * Math.Pow(1.2, Lvl));
         }
 
         /// <summary>
@@ -26,10 +27,10 @@
         {
             Xp -= NeededXp;
             Lvl++;
-            Dmg = Lvl * 10;
-            Hp = Lvl * 100;
-            Armory = Lvl;
-            NeededXp = Lvl * 100;
+            Dmg = (long)(10 * Math.Pow(1.2, Lvl));
+            Hp = (long)(100 * Math.Pow(1.2, Lvl));
+            Armory = (long)(1 * Math.Pow(1.2, Lvl));
+            NeededXp = (long)(100 * Math.Pow(1.5, Lvl));
             Console.WriteLine("Поздравляем! Уровень повышен, ваши характеристики улучшены!");
         }
     }
